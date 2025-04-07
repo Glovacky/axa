@@ -36,7 +36,7 @@ class BasePage:
         return self.find(locator).text
     
     
-    def check_element_exists(self, element_locator, timeout=1):
+    def check_element_exists(self, element_locator, timeout=3):
         
         #print("checking existence of an element:")
         #print(element_locator)
