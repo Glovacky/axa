@@ -17,6 +17,10 @@ class BasePage:
 
     def find(self, locator):
         return self.driver.find_element(*locator)
+    
+    
+    def find_multiple(self, locator):
+        return self.driver.find_elements(*locator)
 
 
     def click(self, locator):
@@ -32,7 +36,7 @@ class BasePage:
         return self.find(locator).text
     
     
-    def check_element_exists(self, element_locator, timeout=1):
+    def check_element_exists(self, element_locator, timeout=3):
         
         #print("checking existence of an element:")
         #print(element_locator)
