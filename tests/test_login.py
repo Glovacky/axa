@@ -1,28 +1,34 @@
-from pages import inventory_page
-from utils.credentials import USERS, PASSWORD
-from pages.login_page import LoginPage
+import pytest
+
 from pages.inventory_page import InventoryPage
+from pages.login_page import LoginPage
 
 
-def test_login_standard_user(driver, base_url):
+@pytest.mark.parametrize(
+    "username, password, should_redirect, expected_error",
+    [
+        ("standard_user", "secret_sauce", True, None),  # valid user
+        ("locked_out_user", "secret_sauce", False, "locked_out"),  # locked out user
+        ("wrong", "wrong", False, "wrong_creds"),  # invalid user
+    ],
+)
+def test_login_cases(
+    driver, base_url, username, password, should_redirect, expected_error
+):
     login_page = LoginPage(driver, base_url)
-    login_page.perform_login(USERS["standard"], PASSWORD)
-    inventory_page = InventoryPage(driver, base_url)
-     
-    assert inventory_page.is_on_inventory_page(), "Should be redirected to inventory page"
+    login_page.perform_login(username, password)
 
+    if should_redirect:
+        inventory_page = InventoryPage(driver, base_url)
+        assert (
+            inventory_page.is_on_inventory_page()
+        ), f"{username} should be redirected to inventory page"
+    else:
+        assert driver.current_url == base_url, f"{username} should not be redirected"
 
-def test_login_locked_out_user(driver, base_url):
-    login_page = LoginPage(driver, base_url)
-    login_page.perform_login(USERS["locked_out"], PASSWORD)
-
-    assert driver.current_url == base_url, "Locked out user should not be redirected"
-    assert login_page.check_locked_out(), "Error message for locked out user should show up"
-
-
-def test_login_wrong_creds(driver, base_url):
-    login_page = LoginPage(driver, base_url)
-    login_page.perform_login("wrong","wrong")
-    assert driver.current_url == base_url, "Wrong credentials should not redirect"
-    assert login_page.check_wrong_creds(),"Error message for wrong credentials should show up"
-
+        if expected_error == "locked_out":
+            assert login_page.check_locked_out(), "Locked out user error should show up"
+        elif expected_error == "wrong_creds":
+            assert (
+                login_page.check_wrong_creds()
+            ), "Wrong credentials error should show up"

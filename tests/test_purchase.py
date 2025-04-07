@@ -3,12 +3,11 @@ from pages.checkout1 import CheckoutStepOnePage
 from pages.checkout2 import CheckoutStepTwoPage
 from pages.inventory_page import InventoryPage
 from pages.login_page import LoginPage
-from utils.credentials import PASSWORD, USERS
 
 
-def test_single_purchase(driver, base_url):
+def test_single_purchase(driver, base_url, users, password):
     login_page = LoginPage(driver, base_url)
-    login_page.perform_login(USERS["standard"], PASSWORD)
+    login_page.perform_login(users["standard"], password)
 
     inventory_page = InventoryPage(driver, base_url)
     inventory_page.add_to_cart_by_item_name("Sauce Labs Backpack")
