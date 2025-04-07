@@ -1,11 +1,12 @@
 from pages.cart_page import CartPage
 from pages.checkout1 import CheckoutStepOnePage
 from pages.checkout2 import CheckoutStepTwoPage
+from pages.checkout3 import CheckoutCompletePage
 from pages.inventory_page import InventoryPage
 from pages.login_page import LoginPage
 
 
-def test_single_purchase(driver, base_url, users, password):
+def test_single_item_purchase(driver, base_url, users, password):
     login_page = LoginPage(driver, base_url)
     login_page.perform_login(users["standard"], password)
 
@@ -29,3 +30,10 @@ def test_single_purchase(driver, base_url, users, password):
     assert tax == 2.4, "Tax is wrong value"
     assert total == 32.39, "Total is wrong value"
     assert total == subtotal + tax, "Tax + subtotal is different than total"
+
+    checkout2.finish_checkout()
+
+    checkout_complete = CheckoutCompletePage(driver, base_url)
+    assert (
+        checkout_complete.thank_you_header_visible()
+    ), "`Thank you` header should show up after completing order"

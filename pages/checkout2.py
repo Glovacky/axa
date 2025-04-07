@@ -9,6 +9,7 @@ class CheckoutStepTwoPage(BasePage):
     SUBTOTAL_LABEL = (By.CLASS_NAME, "summary_subtotal_label")
     SUMMARY_TAX_LABEL = (By.CLASS_NAME, "summary_tax_label")
     SUMMARY_TOTAL_LABEL = (By.CLASS_NAME, "summary_total_label")
+    FINISH_BUTTON = (By.ID, "finish")
 
     def _extract_price_from_label(self, locator):
         text = self.get_text(locator)
@@ -23,3 +24,6 @@ class CheckoutStepTwoPage(BasePage):
 
     def get_total(self):
         return self._extract_price_from_label(self.SUMMARY_TOTAL_LABEL)
+
+    def finish_checkout(self):
+        self.click(self.FINISH_BUTTON)
